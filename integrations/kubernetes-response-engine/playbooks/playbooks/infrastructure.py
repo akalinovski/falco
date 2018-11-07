@@ -64,6 +64,27 @@ class KubernetesClient:
 
         return self._v1.patch_namespaced_pod(name, namespace, body)
 
+class RocketChatClient(object):
+    def __init__(self, rocketchat_url):
+        self._rocketchat_url = rocketchat_url
+
+    def post_message(self, message):
+        auth_info = {"user": "admin", "password": "admin"}
+        headers = {
+            'Content-Type': 'application/json',
+            'charset': 'utf-8'
+        }
+        r = requests.post(self._rocketchat_url + '/api/v1/login', data=json.dumps(auth_info), headers=headers)
+        token_info = r.json()['data']
+        user_id, token = token_info['userId'], token_info['authToken']
+        headers = {
+            'X-Auth-Token': token,
+            'X-User-Id': user_id,
+            'Content-type': 'application/json'
+        }
+
+        requests.post(self._rocketchat_url + '/api/v1/chat.postMessage',
+                      data=json.dumps(message), headers=headers)
 
 class SlackClient:
     def __init__(self, slack_webhook_url):
