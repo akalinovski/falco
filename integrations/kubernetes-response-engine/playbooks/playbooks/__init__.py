@@ -9,6 +9,57 @@ class DeletePod(object):
         pod_name = alert['output_fields']['k8s.pod.name']
 
         self._k8s_client.delete_pod(pod_name)
+        
+class AddMessageToRocketChat(object):
+    def __init__(self, rocket_client):
+        self._rocket_client = rocket_client
+
+    def run(self, alert):
+        message = self._build_message(alert)
+        self._rocket_client.post_message(message)
+
+        return message
+
+    def _build_message(self, alert):
+        msg = {
+            "alias": "Gruggy",
+            "channel": "#general",
+            "text": "Security Alert",
+            "attachments": [
+                {
+                    "collapsed": False,
+                    "color": "#ff0000",
+                    "fields": [
+                        {
+                            "short": False,
+                            "title": "Output",
+                            "value": _output_from_alert(alert)
+                        },
+                        {
+                            "short": False,
+                            "title": "Rule",
+                            "value": alert['rule']
+                        },
+                        {
+                            "short": False,
+                            "title": "Priority",
+                            "value": alert['priority']
+                        },
+                        {
+                            'title': 'Kubernetes Pod Name',
+                            'value': alert['output_fields']['k8s.pod.name'],
+                            'short': True
+                        },
+                        {
+                            'title': 'Container Id',
+                            'value': alert['output_fields']['container.id'],
+                            'short': True
+                        }
+                    ]
+                }
+            ]
+        }
+        return msg
 
 
 class AddMessageToSlack(object):
