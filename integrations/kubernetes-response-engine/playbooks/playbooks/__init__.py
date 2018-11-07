@@ -22,7 +22,7 @@ class AddMessageToRocketChat(object):
 
     def _build_message(self, alert):
         msg = {
-            "alias": "Gruggy",
+            "alias": "Sysdig Falco",
             "channel": "#general",
             "text": "Security Alert",
             "attachments": [
