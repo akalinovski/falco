@@ -48,12 +48,12 @@ class AddMessageToRocketChat(object):
                         {
                             'title': 'Kubernetes Pod Name',
                             'value': alert['output_fields']['k8s.pod.name'],
-                            'short': True
+                            'short': False
                         },
                         {
                             'title': 'Container Id',
                             'value': alert['output_fields']['container.id'],
-                            'short': True
+                            'short': False
                         }
                     ]
                 }
